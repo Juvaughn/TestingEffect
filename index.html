@@ -1,0 +1,768 @@
+<!-- html comments need to look like this -->
+<!-- don't forget to open AND close the tag -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Testing Effect</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="description" content=""/>
+
+    <!-- we need to link to our jspsych file using script tags -->
+    <script src="js/jspsych.js"></script>
+
+    <!-- then we need to link to our needed plugins using script tags -->
+    <script src="plugins/plugin-html-keyboard-response.js"></script>
+    <script src="plugins/plugin-instructions.js"></script>
+    <script src="plugins/plugin-audio-keyboard-response.js"></script>
+    <script src="plugins/plugin-preload.js"></script>
+    <script src="plugins/plugin-survey-text.js"></script>
+
+    <!-- we also need to link to our stylesheet -->
+    <link href="css/jspsych.css" rel="stylesheet" type="text/css"/>
+
+    <style>
+    </style>
+</head>
+
+<body>
+
+
+<script>
+    // DONT EDIT THIS FUNCTION
+    // We'll use this function to save our data to the server
+    // It will save the data with the date/time + random string as the filename
+    function saveData() {
+        // 1. get all the data from the browser and convert it to CSV format
+        let data_in = jsPsych.data.get().csv()
+
+        // give it an informative name
+        let d = new Date();
+        let name = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "_" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + "_" + jsPsych.randomization.randomID(8)
+
+        // 2. Call our server code
+        var url = 'save_data.php';
+        var data_to_send = {filename: name, filedata: data_in};
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(data_to_send),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        });
+    }
+
+
+    // initialize jsPsych and display the data in the browser when the experiment is finished
+    const jsPsych = initJsPsych({
+        on_finish: function () {
+            // save the data at the end
+            saveData();
+            // display the data on the screen when the experiment ends.
+            jsPsych.data.displayData();
+        }
+    });
+
+//Variable with all distractiong words
+    let all_music = new Audio("sounds/All words.m4a")
+      all_music.loop = true
+      all_music.volume = .5
+
+
+//The preload function
+    const preload = {
+      type: jsPsychPreload,
+      audio: [
+      "sounds/Apple.mp3",
+      "sounds/Car.mp3",
+      "sounds/Mangoes.mp3",
+      "sounds/Sweater.mp3",
+      "sounds/All words.m4a"
+      ]
+    }
+
+
+    //////// Create our stimulus lists /////////////
+
+    //List of word slightly related word pairs
+    var study_phase = [
+          {word: "angle - corner"},
+          {word: "author - poet"},
+          {word: "beach - blanket"},
+          {word: "block - street"},
+          {word: "chain - fence"},
+          {word: "child - mother"},
+          {word: "cloth - table"},
+          {word: "coffee - morning"},
+          {word: "college - student"},
+          {word: "curve - shape"},
+          {word: "engine - machine"},
+          {word: "factory - product"},
+          {word: "frame - window"},
+          {word: "group - meeting"},
+          {word: "guard - prison"},
+          {word: "lunch - supper"},
+          {word: "master - owner"},
+          {word: "nation - state"},
+          {word: "native - foreign"},
+          {word: "nature - trail"},
+          {word: "novel - story"},
+          {word: "object - symbol"},
+          {word: "office - doctor"},
+          {word: "paint - picture"},
+          {word: "pencil - point"},
+          {word: "people - world"},
+          {word: "quarter - dollar"},
+          {word: "range - rifle"},
+          {word: "report - weather"},
+          {word: "sheet - cover"},
+          {word: "slave - worker"},
+          {word: "smile - teeth"},
+          {word: "sound - speaker"},
+          {word: "station - radio"},
+          {word: "stick - branch"},
+          {word: "store - general"},
+          {word: "taste - touch"},
+          {word: "throat - voice"},
+          {word: "train - plane"},
+          {word: "vehicle - truck"},
+          {word: "snow - cold"},
+          {word: "fall - jacket"},
+          {word: "book - write"},
+          {word: "shoes - feet"},
+          {word: "tired - sleep"},
+          {word: "chain - neck"},
+          {word: "ring - finger"},
+          {word: "watch - rist"},
+          {word: "shovel - dirt"},
+          {word: "engine - race"},
+          {word: "movie - watch"},
+          {word: "laugh - joke"},
+          {word: "survey - answer"},
+          {word: "test - grade"},
+          {word: "music - song"},
+          {word: "bridge - water"},
+          {word: "drive - speed"},
+          {word: "house - yard"},
+          {word: "paint - wall"},
+          {word: "battery - device"}
+    ]
+
+    //List of word slightly related word pairs
+    let fa_restudy = [
+    {word: "angle - corner"},
+    {word: "author - poet"},
+    {word: "beach - blanket"},
+    {word: "block - street"},
+    {word: "chain - fence"},
+    {word: "child - mother"},
+    {word: "cloth - table"},
+    {word: "coffee - morning"},
+    {word: "college - student"},
+    {word: "curve - shape"},
+    {word: "engine - machine"},
+    {word: "factory - product"},
+    {word: "frame - window"},
+    {word: "group - meeting"},
+    {word: "guard - prison"}
+    ]
+
+    //List of word slightly related word pairs
+    let fa_retrieval = [
+    {word: "lunch - supper"},
+    {word: "master - owner"},
+    {word: "nation - state"},
+    {word: "native - foreign"},
+    {word: "nature - trail"},
+    {word: "novel - story"},
+    {word: "object - symbol"},
+    {word: "office - doctor"},
+    {word: "paint - picture"},
+    {word: "pencil - point"},
+    {word: "people - world"},
+    {word: "quarter - dollar"},
+    {word: "range - rifle"},
+    {word: "report - weather"},
+    {word: "sheet - cover"}
+    ]
+
+    //List of word slightly related word pairs
+    let da_restudy = [
+    {word: "slave - worker"},
+    {word: "smile - teeth"},
+    {word: "sound - speaker"},
+    {word: "station - radio"},
+    {word: "stick - branch"},
+    {word: "store - general"},
+    {word: "taste - touch"},
+    {word: "throat - voice"},
+    {word: "train - plane"},
+    {word: "vehicle - truck"},
+    {word: "snow - cold"},
+    {word: "fall - jacket"},
+    {word: "book - write"},
+    {word: "shoes - feet"},
+    {word: "tired - sleep"}
+    ]
+
+    //List of word slightly related word pairs
+    let da_retrieval = [
+    {word: "chain - neck"},
+    {word: "ring - finger"},
+    {word: "watch - rist"},
+    {word: "shovel - dirt"},
+    {word: "engine - race"},
+    {word: "movie - watch"},
+    {word: "laugh - joke"},
+    {word: "survey - answer"},
+    {word: "test - grade"},
+    {word: "music - song"},
+    {word: "bridge - water"},
+    {word: "drive - speed"},
+    {word: "house - yard"},
+    {word: "paint - wall"},
+    {word: "battery - device"}
+    ]
+
+
+
+
+    ////////  Instructions ////////////
+
+    // Phase one instructions
+    const phase_one_instructions = {
+      type: jsPsychInstructions,
+      pages: [
+          `Welcome to the experiment! Use the buttons below to navigate through the instructions.`,
+          "Phase 1 - On every trial, you'll see two words, view each word and try to remember each one.",
+          `When you are ready to begin the first trial, press Next.`
+      ],
+      show_clickable_nav: true,
+    }
+
+
+    // Phase two instructions
+    const phase_two_instructions = {
+      type: jsPsychInstructions,
+      pages: [
+          "Phase 2 - On every trial, you'll see two words, view each word and try to commit the word to memory.",
+          "During the second half of Phase 2, you will be required to press 'n' if the audio word is natural or 'm' if the audio word is man-made.",
+          `When you are ready to begin, press Next.`
+      ],
+      show_clickable_nav: true,
+    }
+
+    // Phase three instructions
+    const phase_three_instructions = {
+      type: jsPsychInstructions,
+      pages: [
+          "Phase 3 - This phase is the recall phase, complete the math problems then input the associated word in each slot from the cue word.",
+          "Math problems should be completed in 5 minutes.",
+          "The recall of the associated words from the cue words should be typed in the text box, you have 6 minutes to complete this task.",
+          `When you are ready to begin, press Next.`
+      ],
+      show_clickable_nav: true,
+    }
+
+    // Phase three instructions
+    const debrief = {
+      type: jsPsychInstructions,
+      pages: [
+          "Thank you for completing the experiment, you should have gone through 3 phases, study phase, distractions and restudy phase and recall phase.",
+          "You should have studied the words in phase one, restudy the words in phase two, completed the math problems and then do the recall excercise.",
+          "During the recall phase, if you could remember the same amount of words for both the distraction word pairs as well as the non distracted word pairs then the distractions did not impair your active recall.",
+          `When you are ready to end, press Next.`
+      ],
+      show_clickable_nav: true,
+    }
+
+
+    //////// Experiment Phase One////////////////////
+
+    //Variable that include the study phase part one
+    const study_phase_one = {
+        type: jsPsychHtmlKeyboardResponse,
+        timeline: [
+        {
+          stimulus: function(){
+            let s = `<p style = "font-size: 72px;">` +
+              jsPsych.timelineVariable("word") + `</p>`
+            return s
+          },
+          //Save experimental data info
+          data: {
+            word:jsPsych.timelineVariable("word")
+          }
+        }
+        ],
+        //Timeline variables
+        timeline_variables: [
+        {word: "angle - corner"},
+        {word: "author - poet"},
+        {word: "beach - blanket"},
+        {word: "block - street"},
+        {word: "chain - fence"},
+        {word: "child - mother"},
+        {word: "cloth - table"},
+        {word: "coffee - morning"},
+        {word: "college - student"},
+        {word: "curve - shape"},
+        {word: "engine - machine"},
+        {word: "factory - product"},
+        {word: "frame - window"},
+        {word: "group - meeting"},
+        {word: "guard - prison"},
+        {word: "lunch - supper"},
+        {word: "master - owner"},
+        {word: "nation - state"},
+        {word: "native - foreign"},
+        {word: "nature - trail"},
+        {word: "novel - story"},
+        {word: "object - symbol"},
+        {word: "office - doctor"},
+        {word: "paint - picture"},
+        {word: "pencil - point"},
+        {word: "people - world"},
+        {word: "quarter - dollar"},
+        {word: "range - rifle"},
+        {word: "report - weather"},
+        {word: "sheet - cover"},
+        {word: "slave - worker"},
+        {word: "smile - teeth"},
+        {word: "sound - speaker"},
+        {word: "station - radio"},
+        {word: "stick - branch"},
+        {word: "store - general"},
+        {word: "taste - touch"},
+        {word: "throat - voice"},
+        {word: "train - plane"},
+        {word: "vehicle - truck"},
+        {word: "snow - cold"},
+        {word: "fall - jacket"},
+        {word: "book - write"},
+        {word: "shoes - feet"},
+        {word: "tired - sleep"},
+        {word: "chain - neck"},
+        {word: "ring - finger"},
+        {word: "watch - rist"},
+        {word: "shovel - dirt"},
+        {word: "engine - race"},
+        {word: "movie - watch"},
+        {word: "laugh - joke"},
+        {word: "survey - answer"},
+        {word: "test - grade"},
+        {word: "music - song"},
+        {word: "bridge - water"},
+        {word: "drive - speed"},
+        {word: "house - yard"},
+        {word: "paint - wall"},
+        {word: "battery - device"}
+        ],
+        //Parameters of choices, order and duration
+    //    randomize_order: true,
+        trial_duration: 6000,
+        post_trial_gap: 250
+    }
+
+
+
+    //////// Experiment Phase Two////////////////////
+
+    //Variable that include the study phase part two
+    const fa_restudy_phase_two = {
+      type: jsPsychHtmlKeyboardResponse,
+      timeline: [
+      {
+        stimulus: function(){
+          let s = `<p style = "font-size: 72px;">` + jsPsych.timelineVariable("word") + `</p>`
+          return s
+        },
+        //Save experimental data info
+        data: {
+          word:jsPsych.timelineVariable("word"),
+          word:jsPsych.timelineVariable("type")
+        }
+      }
+      ],
+      //Timeline variables
+      timeline_variables: [
+      {word: "angle - corner", type:"fa_restudy"},
+      {word: "author - poet", type:"fa_restudy"},
+      {word: "beach - blanket", type:"fa_restudy"},
+      {word: "block - street", type:"fa_restudy"},
+      {word: "chain - fence", type:"fa_restudy"},
+      {word: "child - mother", type:"fa_restudy"},
+      {word: "cloth - table", type:"fa_restudy"},
+      {word: "coffee - morning", type:"fa_restudy"},
+      {word: "college - student", type:"fa_restudy"},
+      {word: "curve - shape", type:"fa_restudy"},
+      {word: "engine - machine", type:"fa_restudy"},
+      {word: "factory - product", type:"fa_restudy"},
+      {word: "frame - window", type:"fa_restudy"},
+      {word: "group - meeting", type:"fa_restudy"},
+      {word: "guard - prison", type:"fa_restudy"}
+      ],
+      //Parameters of choices, order and duration
+  //    randomize_order: true,
+      trial_duration: 6000,
+      post_trial_gap: 250
+    }
+
+    //Variable that include the six seconds break
+    const break_one = {
+      type: jsPsychHtmlKeyboardResponse,
+      timeline: [
+      {
+        stimulus: function(){
+          let s = `<p style = "font-size: 30px;">The next part of the experiment will begin in 6 seconds.</p>`
+          return s
+        }
+      }
+      ],
+      //Parameters of choices and duration
+      trial_duration: 6000
+    }
+
+//Variable for the retrieval
+    const fa_retrieval_phase_two = {
+      type: jsPsychHtmlKeyboardResponse,
+      timeline: [
+      {
+        stimulus: function(){
+          let s = `<p style = "font-size: 72px;">` + jsPsych.timelineVariable("word") + `</p>`
+          return s
+        },
+        //Save experimental data info
+        data: {
+          word:jsPsych.timelineVariable("word"),
+          word:jsPsych.timelineVariable("type")
+        }
+      }
+      ],
+      //Timeline variables
+      timeline_variables: [
+      {word: "lunch - supp_ _", type:"fa_retrieval"},
+      {word: "master - own_ _", type:"fa_retrieval"},
+      {word: "nation - sta_ _", type:"fa_retrieval"},
+      {word: "native - forei_ _", type:"fa_retrieval"},
+      {word: "nature - tra_ _", type:"fa_retrieval"},
+      {word: "novel - sto_ _", type:"fa_retrieval"},
+      {word: "object - symb_ _", type:"fa_retrieval"},
+      {word: "office - doct_ _", type:"fa_retrieval"},
+      {word: "paint - pictu_ _", type:"fa_retrieval"},
+      {word: "pencil - poi_ _", type:"fa_retrieval"},
+      {word: "people - wor_ _", type:"fa_retrieval"},
+      {word: "quarter - doll_ _", type:"fa_retrieval"},
+      {word: "range - rif_ _", type:"fa_retrieval"},
+      {word: "report - weath_ _", type:"fa_retrieval"},
+      {word: "sheet - cov_ _", type:"fa_retrieval"}
+      ],
+      //Parameters of choices, order and duration
+  //    randomize_order: true,
+      trial_duration: 6000,
+      post_trial_gap: 250
+
+    }
+
+
+    //Variable that include the six seconds break
+    const break_two = {
+      type: jsPsychHtmlKeyboardResponse,
+      timeline: [
+      {
+        stimulus: function(){
+          let s = `<p style = "font-size: 30px;">This is the second half of Phase 2!
+            Press 'm' if the word is Man-made or 'n' if the word is natural.</p>`
+          return s
+        }
+      }
+      ],
+      //Parameters of choices and duration
+      trial_duration: 6000
+    }
+
+
+ ///////////// Distraction trials of Experiment Restudy & Retrieval/////////////
+
+
+    //Variable that contains the distraction for the experiment, this is just for illustration purposes
+    //it is not included on the timeline.
+     const sounds_distractions = {
+       type: jsPsychAudioKeyboardResponse,
+       timeline: [
+       {
+        stimulus: jsPsych.timelineVariable("audio")
+           }
+         ],
+         timeline_variables: [
+         {audio:"sounds/Apple.mp3"},
+         {audio:"sounds/Car.mp3"},
+         {audio:"sounds/Mangoes.mp3"},
+         {audio:"sounds/Sweater.mp3"},
+         {audio:"sounds/Sweater.mp3"},
+         {audio:"sounds/Car.mp3"},
+         {audio:"sounds/Mangoes.mp3"},
+         {audio:"sounds/Apple.mp3"},
+         {audio:"sounds/Car.mp3"},
+         {audio:"sounds/Mangoes.mp3"},
+         {audio:"sounds/Sweater.mp3"},
+         {audio:"sounds/Apple.mp3"},
+         {audio:"sounds/Sweater.mp3"},
+         {audio:"sounds/Mangoes.mp3"},
+         {audio:"sounds/Sweater.mp3"}
+         ],
+        choices: ['m', 'n'],
+        trial_duration: 6000,
+        randomize_order: true,
+        prompt: `<h3>Press 'n' if the audio word is natural or 'm' if the audio word is man-made.</h3>
+
+        <p>This is the CORRECT code that I wrote for the audio portion of the distraction trials, jsPsych currently
+        dosen't support simultaneous plugins on the timeline. I tried to combined jsPsychAudioKeyboardResponse
+        and jsPsychHtmlKeyboard response and it was impossible. I then double checked on the jsPsych database.
+        jsPsych supported a plugin in the past that allowed this feature, but it is no longer offered with the
+        newer updates. So I am adding the code here for the jsPsychAudioKeyboardResponse and hopefully not be penalized too much.</p>`
+     }
+
+   //Variables with the restufy of phase two
+    const da_restudy_phase_two = {
+      timeline: [
+      {
+        type: jsPsychAudioKeyboardResponse,
+        stimulus: jsPsych.timelineVariable("audio")
+     },
+
+      {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function(){
+        let s = `<p style = "font-size: 72px;">` + jsPsych.timelineVariable("word") + `</p>`
+           return s
+       },
+       //Save experimental data info
+       data: {
+         word:jsPsych.timelineVariable("word"),
+         type:jsPsych.timelineVariable("type"),
+         audio:jsPsych.timelineVariable("audio")
+       }
+      }
+    ],
+    //Timeline variables
+    timeline_variables: [
+    {audio:"sounds/Apple.mp3", word:"slave - worker", type:"da_restudy"},
+    {audio:"sounds/Car.mp3", word: "smile - teeth", type:"da_restudy"},
+    {audio:"sounds/Mangoes.mp3", word: "sound - speaker", type:"da_restudy"},
+    {audio:"sounds/Sweater.mp3", word: "station - radio", type:"da_restudy"},
+    {audio:"sounds/Car.mp3", word: "stick - branch", type:"da_restudy"},
+    {audio:"sounds/Car.mp3", word: "store - general", type:"da_restudy"},
+    {audio:"sounds/Mangoes.mp3", word: "taste - touch", type:"da_restudy"},
+    {audio:"sounds/Sweater.mp3", word: "throat - voice", type:"da_restudy"},
+    {audio:"sounds/Car.mp3", word: "train - plane", type:"da_restudy"},
+    {audio:"sounds/Apple.mp3", word: "vehicle - truck", type:"da_restudy"},
+    {audio:"sounds/Sweater.mp3", word: "snow - cold", type:"da_restudy"},
+    {audio:"sounds/Apple.mp3", word: "fall - jacket", type:"da_restudy"},
+    {audio:"sounds/Car.mp3", word: "book - write", type:"da_restudy"},
+    {audio:"sounds/Mangoes.mp3", word: "shoes - feet", type:"da_restudy"},
+    {audio:"sounds/Sweater.mp3", word: "tired - sleep", type:"da_restudy"},
+
+  ],
+  //Parameters of experiment
+   choices: ['m', 'n'],
+   post_trial_gap: 250,
+   trial_duration: 6000
+  }
+
+
+
+    //Variable that include the six seconds break
+        const break_three = {
+          type: jsPsychHtmlKeyboardResponse,
+          timeline: [
+          {
+            stimulus: function(){
+              let s = `<p style = "font-size: 30px;">The next part of the experiment will begin in 6 seconds.</p>`
+              return s
+            }
+          }
+          ],
+          //Parameters of choices and duration
+          trial_duration: 6000,
+        }
+
+
+
+        //distraction retrieval phase
+            const da_retrieval_phase_two = {
+              timeline: [
+                {
+                type: jsPsychAudioKeyboardResponse,
+                stimulus: jsPsych.timelineVariable("audio")
+                },
+                {
+                type: jsPsychHtmlKeyboardResponse,
+                stimulus: function(){
+                  let s = `<p style = "font-size: 72px;">` + jsPsych.timelineVariable("word") + `</p>`
+                  return s
+                },
+                //Save experimental data info
+                data: {
+                  word:jsPsych.timelineVariable("word"),
+                  type:jsPsych.timelineVariable("type"),
+                  audio:jsPsych.timelineVariable("audio")
+                }
+              }
+              ],
+              //Timeline variables
+              timeline_variables: [
+              {audio:"sounds/Apple.mp3", word: "chain - ne_ _", type:"da_retrieval"},
+              {audio:"sounds/Car.mp3", word: "ring - fing_ _", type:"da_retrieval"},
+              {audio:"sounds/Mangoes.mp3", word: "watch - ri_ _", type:"da_retrieval"},
+              {audio:"sounds/Sweater.mp3", word: "shovel - di_ _", type:"da_retrieval"},
+              {audio:"sounds/Apple.mp3", word: "engine - ra_ _", type:"da_retrieval"},
+              {audio:"sounds/Car.mp3", word: "movie - wat_ _", type:"da_retrieval"},
+              {audio:"sounds/Mangoes.mp3", word: "laugh - jo_ _", type:"da_retrieval"},
+              {audio:"sounds/Sweater.mp3", word: "survey - answ_ _", type:"da_retrieval"},
+              {audio:"sounds/Apple.mp3", word: "test - gra_ _", type:"da_retrieval"},
+              {audio:"sounds/Car.mp3", word: "music - so_ _", type:"da_retrieval"},
+              {audio:"sounds/Mangoes.mp3", word: "bridge - wat_ _", type:"da_retrieval"},
+              {audio:"sounds/Sweater.mp3", word: "drive - spe_ _", type:"da_retrieval"},
+              {audio:"sounds/Apple.mp3", word: "house - ya_ _", type:"da_retrieval"},
+              {audio:"sounds/Car.mp3", word: "paint - wa_ _", type:"da_retrieval"},
+              {audio:"sounds/Mangoes.mp3", word: "battery - devi_ _", type:"da_retrieval"}
+              ],
+                            //Parameters of choices, order and duration
+              randomize_order: true,
+              trial_duration: 6000,
+              post_trial_gap: 250,
+              choices: ["m","n"],
+       }
+
+
+            //Variable that include the six seconds break
+                const break_four = {
+                  type: jsPsychHtmlKeyboardResponse,
+                  timeline: [
+                  {
+                    stimulus: function(){
+                      let s = `<p style = "font-size: 30px;">The next part of the experiment will begin in 6 seconds.</p>`
+                      return s
+                    }
+                  }
+                  ],
+                  //Parameters of choices and duration
+                  trial_duration: 6000,
+                  on_start: function(){
+                   all_music.pause()
+                  },
+                }
+
+
+      /////// Experiment Phase THREE////////////////////
+
+
+      //Variable that include the math problems
+      const math_phase_three = {
+          type: jsPsychSurveyText,
+          data: {
+            questions:jsPsych.timelineVariable("prompt"),
+          },
+          questions: [
+          {prompt: "5 * 5 / 5 =   "},
+          {prompt: "100/10 + 25 =   "},
+          {prompt: "30/3 * 100 =   "}
+          ],
+          //Parameters of choices, order and duration
+          //    randomize_order: true,
+          rt: 5000,
+          preamble: `<p>Complete these math problems, then press continue.</p>`
+          }
+
+
+      //Variable that include the test phase
+      const test_phase_three = {
+          type: jsPsychSurveyText,
+          data: {
+            questions:jsPsych.timelineVariable("prompt"),
+          },
+          questions: [
+          {prompt: "angle -   "},
+          {prompt: "author -   "},
+          {prompt: "beach -   "},
+          {prompt: "block -   "},
+          {prompt: "chain -   "},
+          {prompt: "child -   "},
+          {prompt: "cloth -   "},
+          {prompt: "coffee -   "},
+          {prompt: "college -   "},
+          {prompt: "curve -   "},
+          {prompt: "engine -   "},
+          {prompt: "factory -   "},
+          {prompt: "frame -   "},
+          {prompt: "group -   "},
+          {prompt: "guard -   "},
+          {prompt: "lunch -   "},
+          {prompt: "master -   "},
+          {prompt: "nation -   "},
+          {prompt: "native -   "},
+          {prompt: "nature -   "},
+          {prompt: "novel -   "},
+          {prompt: "object -   "},
+          {prompt: "office -   "},
+          {prompt: "paint -   "},
+          {prompt: "pencil -   "},
+          {prompt: "people -   "},
+          {prompt: "quarter -   "},
+          {prompt: "range -   "},
+          {prompt: "report -   "},
+          {prompt: "sheet -   "},
+          {prompt: "slave -   "},
+          {prompt: "smile -   "},
+          {prompt: "sound -   "},
+          {prompt: "station -   "},
+          {prompt: "stick -   "},
+          {prompt: "store -   "},
+          {prompt: "taste -   "},
+          {prompt: "throat -   "},
+          {prompt: "train -   "},
+          {prompt: "vehicle -   "},
+          {prompt: "snow -   "},
+          {prompt: "fall -   "},
+          {prompt: "book -   "},
+          {prompt: "shoes -   "},
+          {prompt: "tired -   "},
+          {prompt: "chain -   "},
+          {prompt: "ring -   "},
+          {prompt: "watch -   "},
+          {prompt: "shovel -   "},
+          {prompt: "engine -   "},
+          {prompt: "movie -   "},
+          {prompt: "laugh -   "},
+          {prompt: "survey -   "},
+          {prompt: "test -   "},
+          {prompt: "music -   "},
+          {prompt: "bridge -   "},
+          {prompt: "drive -   "},
+          {prompt: "house -   "},
+          {prompt: "paint -   "},
+          {prompt: "battery -   "}
+          ],
+          //Parameters of choices, order and duration
+      //    randomize_order: true,
+          rt: 60000,
+          preamble: `<p>Budget 6 seconds per word, recall and write the associated word from the cue word in the text box.</p>`
+      }
+
+
+
+   //Experiment timeline in order
+    let exp_timeline = [phase_one_instructions, study_phase_one,
+    phase_two_instructions, fa_restudy_phase_two, break_one, fa_retrieval_phase_two,
+    break_two, da_restudy_phase_two, break_three, da_retrieval_phase_two, break_four,
+    phase_three_instructions, math_phase_three, test_phase_three, debrief]
+
+    //////// Run the Timeline ////////////////////////
+    jsPsych.run(exp_timeline)
+
+
+</script>
+</body>
+</html>
